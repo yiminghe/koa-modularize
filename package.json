@@ -1,0 +1,20 @@
+{
+  "name": "koa-modularize",
+  "version": "1.0.0",
+  "author": "yiminghe <yiminghe@gmail.com>",
+  "engines": {
+    "node": ">=0.11"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/yiminghe/koa-modularize.git"
+  },
+  "devDependencies": {
+    "koa": "^0.13.0",
+    "koa-jsx": "^1.1.2",
+    "koa-serve-index": "^1.0.1",
+    "koa-static": "^1.4.7",
+    "react-tools": "^0.12.0"
+  }
+}
