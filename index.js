@@ -12,7 +12,9 @@ module.exports = function (dir, option) {
                 file = path.join(dir, this.url);
                 content = fs.readFileSync(file,'utf-8');
             }
-            content = 'define(function (require, exports, module) {' + content + '\n});';
+            if(!option.nowrap || !option.nowrap.call(this)){
+                content = 'define(function (require, exports, module) {' + content + '\n});';
+            }
             this.set('Content-Type', 'application/javascript;charset=utf-8');
             this.set('Content-Length', Buffer.byteLength(content));
             this.body = content;
