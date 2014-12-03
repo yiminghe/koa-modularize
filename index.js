@@ -4,13 +4,14 @@ var util = require('modulex-util');
 var cwd = process.cwd();
 
 function findPackageVersion(dir, name) {
-    while (dir !== cwd) {
-        var packageDir = path.resolve(dir, 'node_modules/' + name);
+    dir = path.resolve(dir);
+    do {
+        var packageDir = path.join(dir, 'node_modules/' + name);
         if (fs.existsSync(packageDir)) {
-            return require(path.resolve(packageDir, 'package.json')).version;
+            return require(path.join(packageDir, 'package.json')).version;
         }
         dir = path.resolve(dir, '../');
-    }
+    } while (dir !== cwd);
     console.warn('can not find package: ' + name);
 }
 
@@ -39,7 +40,7 @@ module.exports = function (dir, option) {
             var file, content = this.body;
             if (!content) {
                 var json = 0;
-                file = path.resolve(dir, this.url);
+                file = path.join(dir, this.url);
                 if (!fs.existsSync(file)) {
                     if (util.endsWith(file, '.json.js')) {
                         file = file.slice(0, -3);
