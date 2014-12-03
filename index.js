@@ -1,6 +1,34 @@
 var path = require('path');
 var fs = require('fs');
 var util = require('modulex-util');
+var cwd = process.cwd();
+
+function findPackageVersion(dir, name) {
+    while (dir !== cwd) {
+        var packageDir = path.join(dir, 'node_modules/' + name);
+        if (fs.existsSync(packageDir)) {
+            return JSON.parse(fs.readFileSync(path.join(packageDir, 'package.json'))).version;
+        }
+        dir = path.resolve(dir, '../');
+    }
+    console.warn('can not find package: ' + name);
+}
+
+var requireRegExp = /[^.'"]\s*require\s*\((['"])([^)]+)\1\)/g;
+function addVersionToRequire(dir, content) {
+    var requires = [];
+    // Remove comments from the callback string,
+    // look for require calls, and pull them into the dependencies,
+    // but only if there are function args.
+    return content.replace(requireRegExp, function (match, quote, dep) {
+        var leading = match.charAt(0) + 'require(';
+        if (dep.charAt(0) !== '.') {
+            return leading + quote + dep + '/' + findPackageVersion(dir, dep) + quote + ')';
+        } else {
+            return match;
+        }
+    });
+}
 
 module.exports = function (dir, option) {
     dir = dir || process.cwd();
@@ -29,6 +57,7 @@ module.exports = function (dir, option) {
                 }
             }
             if (!option.nowrap || !option.nowrap.call(this)) {
+                content = addVersionToRequire(path.dirname(file), content);
                 content = 'define(function (require, exports, module) {' + content + '\n});';
             }
             this.set('Content-Type', 'application/javascript;charset=utf-8');

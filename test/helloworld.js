@@ -1,4 +1,5 @@
 /** @jsx React.DOM */
+var $ = require('modulex-util');
 
 // tutorial6.js
 var converter = new Showdown.converter();
@@ -12,7 +13,7 @@ var Comment = React.createClass({
                 </h2>
                 <span dangerouslySetInnerHTML={{__html: rawMarkup}} />
             </div>
-            );
+        );
     }
 });
 
@@ -28,13 +29,13 @@ var CommentList = React.createClass({
                 <Comment author={comment.author}>
           {comment.text}
                 </Comment>
-                );
+            );
         });
         return (
             <div className="commentList">
         {commentNodes}
             </div>
-            );
+        );
     }
 });
 
@@ -58,7 +59,7 @@ var CommentForm = React.createClass({
                 <input type="text" placeholder="Say something..." ref="text" />
                 <input type="submit" value="Post" />
             </form>
-            );
+        );
     }
 });
 
@@ -105,7 +106,7 @@ var CommentBox = React.createClass({
                 <CommentList data={this.state.data} />
                 <CommentForm onCommentSubmit={this.handleCommentSubmit} />
             </div>
-            );
+        );
     }
 });
 
