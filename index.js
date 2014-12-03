@@ -15,19 +15,19 @@ function getPackageName(moduleName) {
     }
 }
 
-function findPackageVersion(dir, name) {
-    dir = path.resolve(dir);
+function findPackageVersion(file, name) {
+    var dir = path.resolve(path.dirname(file));
     do {
         var packageDir = path.join(dir, 'node_modules/' + name);
         if (fs.existsSync(packageDir)) {
             return require(path.join(packageDir, 'package.json')).version;
         }
     } while (dir !== cwd && (dir = path.resolve(dir, '../')));
-    console.warn('can not find package: ' + name);
+    console.warn('can not find package in file ' + file + ': ' + name);
 }
 
 var requireRegExp = /[^.'"]\s*require\s*\((['"])([^)]+)\1\)/g;
-function addVersionToRequire(dir, content) {
+function addVersionToRequire(file, content) {
     var requires = [];
     // Remove comments from the callback string,
     // look for require calls, and pull them into the dependencies,
@@ -41,7 +41,7 @@ function addVersionToRequire(dir, content) {
                 suffix = packageName.suffix;
                 packageName = packageName.packageName;
             }
-            return leading + quote + packageName + '/' + findPackageVersion(dir, packageName) + suffix + quote + ')';
+            return leading + quote + packageName + '/' + findPackageVersion(file, packageName) + suffix + quote + ')';
         } else {
             return match;
         }
@@ -75,7 +75,7 @@ module.exports = function (dir, option) {
                 }
             }
             if (!option.nowrap || !option.nowrap.call(this)) {
-                content = addVersionToRequire(path.dirname(file), content);
+                content = addVersionToRequire(file, content);
                 content = 'define(function (require, exports, module) {' + content + '\n});';
             }
             this.set('Content-Type', 'application/javascript;charset=utf-8');
