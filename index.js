@@ -3,6 +3,18 @@ var fs = require('fs');
 var util = require('modulex-util');
 var cwd = process.cwd();
 
+function getPackageName(moduleName) {
+    var index = moduleName.indexOf('/');
+    if (index !== -1) {
+        return {
+            packageName: moduleName.slice(0, index),
+            suffix: moduleName.slice(index)
+        };
+    } else {
+        return moduleName;
+    }
+}
+
 function findPackageVersion(dir, name) {
     dir = path.resolve(dir);
     do {
@@ -10,8 +22,7 @@ function findPackageVersion(dir, name) {
         if (fs.existsSync(packageDir)) {
             return require(path.join(packageDir, 'package.json')).version;
         }
-        dir = path.resolve(dir, '../');
-    } while (dir !== cwd);
+    } while (dir !== cwd && (dir = path.resolve(dir, '../')));
     console.warn('can not find package: ' + name);
 }
 
@@ -24,7 +35,13 @@ function addVersionToRequire(dir, content) {
     return content.replace(requireRegExp, function (match, quote, dep) {
         var leading = match.charAt(0) + 'require(';
         if (dep.charAt(0) !== '.') {
-            return leading + quote + dep + '/' + findPackageVersion(dir, dep) + quote + ')';
+            var packageName = getPackageName(dep);
+            var suffix = '';
+            if (packageName !== dep) {
+                suffix = packageName.suffix;
+                packageName = packageName.packageName;
+            }
+            return leading + quote + packageName + '/' + findPackageVersion(dir, packageName) + suffix + quote + ')';
         } else {
             return match;
         }
