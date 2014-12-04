@@ -24,6 +24,9 @@ function findPackagePath(file, name, suffix) {
       var packagePath = packageDir.slice(cwdLength);
       if (!suffix) {
         var main = require(path.join(packageDir, 'package.json')).main || 'index';
+        if (util.startsWith(main, './')) {
+          main = main.slice(2);
+        }
         suffix = '/' + main;
       }
       return packagePath + suffix;
