@@ -33,11 +33,11 @@ function findPackagePath(file, name, suffix) {
     }
   } while (dir !== cwd && (dir = path.resolve(dir, '../')));
   console.warn('can not find package in file ' + file + ': ' + name);
+  return name;
 }
 
 var requireRegExp = /[^.'"]\s*require\s*\((['"])([^)]+)\1\)/g;
 function completeRequire(file, content) {
-  var requires = [];
   // Remove comments from the callback string,
   // look for require calls, and pull them into the dependencies,
   // but only if there are function args.
