@@ -1,6 +1,6 @@
 {
   "name": "koa-modularize",
-  "version": "2.0.4",
+  "version": "3.0.0",
   "author": "yiminghe <yiminghe@gmail.com>",
   "engines": {
     "node": ">=0.11"
