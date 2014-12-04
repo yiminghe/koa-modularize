@@ -32,7 +32,7 @@ function findPackagePath(file, name, suffix) {
       return packagePath + suffix;
     }
   } while (dir !== cwd && (dir = path.resolve(dir, '../')));
-  console.warn('can not find package in file ' + file + ': ' + name);
+  console.warn('Can not find package in file ' + file + ': ' + name + ', please npm install ' + name + '!');
   return name;
 }
 
@@ -63,10 +63,9 @@ module.exports = function (dir, option) {
   return function* (next) {
     var fileType = (this.url.match(/\.(js)$/) || []).shift();
     if (fileType) {
-      var file, content = this.body;
+      var file = path.join(dir, this.url), content = this.body;
       if (!content) {
         var json = 0;
-        file = path.join(dir, this.url);
         if (!fs.existsSync(file)) {
           if (util.endsWith(file, '.json.js')) {
             file = file.slice(0, -3);
@@ -76,9 +75,7 @@ module.exports = function (dir, option) {
         if (!fs.existsSync(file)) {
           return yield *next;
         }
-
         content = fs.readFileSync(file, 'utf-8');
-
         if (json) {
           content = 'module.exports = ' + content + ';';
         }
