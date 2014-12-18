@@ -1,6 +1,14 @@
 /** @jsx React.DOM */
 var $ = require('modulex-util');
 
+/*
+
+try
+  require('zz')
+
+ */
+require('yy');
+
 // tutorial6.js
 var converter = new Showdown.converter();
 var Comment = React.createClass({
@@ -17,6 +25,10 @@ var Comment = React.createClass({
     }
 });
 
+/**
+ * require('xx')
+ * @type {{author: string, text: string}[]}
+ */
 var data = [
     {author: "Pete Hunt", text: "This is one comment"},
     {author: "Jordan Walke", text: "This is **another** comment"}

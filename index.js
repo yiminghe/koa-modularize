@@ -1,3 +1,8 @@
+/**
+ * koa middleware for transforming commonjs file into browser module format
+ * @author yiminghe@gmail.com
+ */
+
 var path = require('path');
 var fs = require('fs');
 var util = require('modulex-util');
@@ -32,17 +37,34 @@ function findPackagePath(file, name, suffix) {
       return packagePath + suffix;
     }
   } while (dir !== cwd && (dir = path.resolve(dir, '../')));
-  console.warn('Can not find package in file ' + file + ': ' + name + ', please npm install ' + name + '!');
+  console.warn('[koa-modularize]: Can not find package in file ' + file + ': ' + name + ', please npm install ' + name + '!');
   return name;
 }
 
+var commentRegExp = /(\/\*([\s\S]*?)\*\/|([^:]|^)\/\/(.*)$)/mg;
 var requireRegExp = /[^.'"]\s*require\s*\((['"])([^)]+)\1\)/g;
+
 function completeRequire(file, content) {
   // Remove comments from the callback string,
   // look for require calls, and pull them into the dependencies,
   // but only if there are function args.
-  return content.replace(requireRegExp, function (match, quote, dep) {
-    var leading = match.charAt(0) + 'require(';
+  var originalContent = content;
+  var uuid = require('node-uuid').v4();
+  var tag = ' __koa_modularize_' + uuid + '__';
+  var tagReg = new RegExp(tag + '\\d+ ', 'g');
+  var idReg = new RegExp(tag + '(\\d+) ');
+  var id = 0;
+  var comments = [];
+
+  // hide comments
+  content = content.replace(commentRegExp, function (match) {
+    comments.push(match);
+    return tag + (id++) + ' ';
+  });
+
+  // modify package path
+  content = content.replace(requireRegExp, function (match, quote, dep) {
+    var leading = match.match(/^[^.'"]\s*require/)[0];
     if (dep.charAt(0) !== '.') {
       var packageName = getPackageName(dep);
       var suffix = '';
@@ -55,7 +77,16 @@ function completeRequire(file, content) {
       return match;
     }
   });
+
+  // restore comments
+  content = content.replace(tagReg, function (m) {
+    var id = parseInt(m.match(idReg)[1]);
+    return comments[id];
+  });
+
+  return content;
 }
+
 
 module.exports = function (dir, option) {
   dir = dir || process.cwd();

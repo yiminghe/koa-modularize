@@ -3,25 +3,34 @@
 koa middleware for transforming commonjs file into browser module format
 
 
-## usage
+## Usage
 
 ```javascript
 var koa = require('koa');
-var jsx= require('koa-modularize');
-app.use(modularize(__dirname,{
-}));
+var modularize = require('koa-modularize');
+app.use(modularize());
+app.listen(8000);
 ```
 
-## api
+## Example
 
-#### jsx
+```
+node --harmony test/server
+```
 
-middleware for koa
+open  http://localhost:8000/helloworld.js
+
+## API
 
 ```javascript
 GeneratorFunction modularize(dir:String, option: Object)
 ```
 
+### dir
+
+file directory code belongs in. defaults to process.cwd()
+
+### Option details
 <table class="table table-bordered table-striped">
     <thead>
     <tr>
@@ -32,14 +41,9 @@ GeneratorFunction modularize(dir:String, option: Object)
     </thead>
     <tbody>
       <tr>
-          <td>dir</td>
-          <td>String</td>
-          <td>load js from this.body or file at path (dir + url), then add define header for browser loader library</td>
-      </tr>
-      <tr>
-          <td>option</td>
-          <td>Object</td>
-          <td>option config</td>
+         <td>option.nowrap</td>
+         <td>Function</td>
+         <td>whether wrap code with define and transform package into absolute url for browser loader library</td>
       </tr>
       <tr>
           <td>option.next</td>
