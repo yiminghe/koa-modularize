@@ -1,7 +1,7 @@
 var koa = require('koa');
 var serve = require('koa-static');
 var app = koa();
-var cwd = __dirname;
+var cwd = process.cwd();
 var serveIndex = require('koa-serve-index');
 app.use(serveIndex(cwd, {
     hidden: true,

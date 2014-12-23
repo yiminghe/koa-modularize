@@ -1,5 +1,5 @@
 /**
- * koa middleware for transforming commonjs file into browser module format
+ * koa middleware for transforming commonjs file into browser module format and imported css path to absolute path
  * @author yiminghe@gmail.com
  */
 
@@ -43,6 +43,8 @@ function findPackagePath(file, name, suffix) {
 
 var commentRegExp = /(\/\*([\s\S]*?)\*\/|([^:]|^)\/\/(.*)$)/mg;
 var requireRegExp = /[^.'"]\s*require\s*\((['"])([^)]+)\1\)/g;
+var commentCssRegExp = /\/\*([\s\S]*?)\*\//mg;
+var importRegExp = /@import\s*(['"])([^\1]+)\1/g;
 
 function completeRequire(file, content) {
   // Remove comments from the callback string,
@@ -65,7 +67,7 @@ function completeRequire(file, content) {
   // modify package path
   content = content.replace(requireRegExp, function (match, quote, dep) {
     var leading = match.match(/^[^.'"]\s*require\s*\(/)[0];
-    if (dep.charAt(0) !== '.') {
+    if (dep.charAt(0) !== '.' && dep.charAt(0) !== '/') {
       var packageName = getPackageName(dep);
       var suffix = '';
       if (packageName !== dep) {
@@ -87,14 +89,57 @@ function completeRequire(file, content) {
   return content;
 }
 
+function completeCssImport(file, content) {
+  // Remove comments from the callback string,
+  // look for require calls, and pull them into the dependencies,
+  // but only if there are function args.
+  var originalContent = content;
+  var uuid = require('node-uuid').v4();
+  var tag = ' __koa_modularize_' + uuid + '__';
+  var tagReg = new RegExp(tag + '\\d+ ', 'g');
+  var idReg = new RegExp(tag + '(\\d+) ');
+  var id = 0;
+  var comments = [];
+
+  // hide comments
+  content = content.replace(commentCssRegExp, function (match) {
+    comments.push(match);
+    return tag + (id++) + ' ';
+  });
+
+  // modify package path
+  content = content.replace(importRegExp, function (match, quote, dep) {
+    if (dep.charAt(0) !== '.' && dep.charAt(0) !== '/') {
+      var packageName = getPackageName(dep);
+      var suffix = '';
+      if (packageName !== dep) {
+        suffix = packageName.suffix;
+        packageName = packageName.packageName;
+      }
+      return '@import ' + quote + findPackagePath(file, packageName, suffix) + quote + ')';
+    } else {
+      return match;
+    }
+  });
+
+  // restore comments
+  content = content.replace(tagReg, function (m) {
+    var id = parseInt(m.match(idReg)[1]);
+    return comments[id];
+  });
+
+  return content;
+}
 
 module.exports = function (dir, option) {
   dir = dir || process.cwd();
   option = option || {};
   return function* (next) {
-    var fileType = (this.url.match(/\.(js)$/) || []).shift();
-    if (fileType) {
-      var file = path.join(dir, this.url), content = this.body;
+    var fileType = (this.url.match(/\.(js|css)$/) || [])[1];
+    var file, content;
+    if (fileType == 'js') {
+      file = path.join(dir, this.url);
+      content = this.body;
       if (!content) {
         var json = 0;
         if (!fs.existsSync(file)) {
@@ -116,6 +161,22 @@ module.exports = function (dir, option) {
         content = 'define(function (require, exports, module) {' + content + '\n});';
       }
       this.set('Content-Type', 'application/javascript;charset=utf-8');
+      this.set('Content-Length', Buffer.byteLength(content));
+      this.body = content;
+      if (option.next && option.next.call(this)) {
+        yield * next;
+      }
+    } else if (fileType === 'css') {
+      file = path.join(dir, this.url);
+      content = this.body;
+      if (!content) {
+        if (!fs.existsSync(file)) {
+          return yield *next;
+        }
+        content = fs.readFileSync(file, 'utf-8');
+      }
+      content = completeCssImport(file, content);
+      this.set('Content-Type', 'text/css;charset=utf-8');
       this.set('Content-Length', Buffer.byteLength(content));
       this.body = content;
       if (option.next && option.next.call(this)) {

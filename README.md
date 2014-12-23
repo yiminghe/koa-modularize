@@ -1,6 +1,6 @@
 # koa-modularize
 
-koa middleware for transforming commonjs file into browser module format
+koa middleware for transforming node_modules js file into browser module format and imported css path to absolute node_modules path
 
 
 ## Usage
@@ -15,10 +15,10 @@ app.listen(8000);
 ## Example
 
 ```
-node --harmony test/server
+npm start
 ```
 
-open  http://localhost:8000/helloworld.js
+open  http://localhost:8000/test/helloworld.js  http://localhost:8000/test/test.css
 
 ## API
 
