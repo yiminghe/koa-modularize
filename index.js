@@ -116,7 +116,7 @@ function completeCssImport(file, content) {
         suffix = packageName.suffix;
         packageName = packageName.packageName;
       }
-      return '@import ' + quote + findPackagePath(file, packageName, suffix) + quote + ')';
+      return '@import ' + quote + findPackagePath(file, packageName, suffix) + quote;
     } else {
       return match;
     }
