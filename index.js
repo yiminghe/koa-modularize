@@ -9,6 +9,10 @@ var util = require('modulex-util');
 var cwd = process.cwd();
 var cwdLength = cwd.length;
 
+function startsWithPackageName(str) {
+  return !util.startsWith(str, '.') && !util.startsWith(str, '/') && !util.startsWith(str, 'http:') && !util.startsWith(str, 'https:');
+}
+
 function getPackageName(moduleName) {
   var index = moduleName.indexOf('/');
   if (index !== -1) {
@@ -67,7 +71,7 @@ function completeRequire(file, content) {
   // modify package path
   content = content.replace(requireRegExp, function (match, quote, dep) {
     var leading = match.match(/^[^.'"]\s*require\s*\(/)[0];
-    if (dep.charAt(0) !== '.' && dep.charAt(0) !== '/') {
+    if (startsWithPackageName(dep)) {
       var packageName = getPackageName(dep);
       var suffix = '';
       if (packageName !== dep) {
@@ -109,7 +113,7 @@ function completeCssImport(file, content) {
 
   // modify package path
   content = content.replace(importRegExp, function (match, quote, dep) {
-    if (dep.charAt(0) !== '.' && dep.charAt(0) !== '/') {
+    if (startsWithPackageName(dep)) {
       var packageName = getPackageName(dep);
       var suffix = '';
       if (packageName !== dep) {
