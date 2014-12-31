@@ -32,7 +32,8 @@ function findPackagePath(file, name, suffix) {
     if (fs.existsSync(packageDir)) {
       var packagePath = packageDir.slice(cwdLength);
       if (!suffix) {
-        var main = require(path.join(packageDir, 'package.json')).main || 'index';
+        var packageInfo = require(path.join(packageDir, 'package.json'));
+        var main = packageInfo.browser || packageInfo.main || 'index';
         if (util.startsWith(main, './')) {
           main = main.slice(2);
         }
@@ -46,7 +47,7 @@ function findPackagePath(file, name, suffix) {
 }
 
 var commentRegExp = /(\/\*([\s\S]*?)\*\/|([^:]|^)\/\/(.*)$)/mg;
-var requireRegExp = /[^.'"]\s*require\s*\((['"])([^)]+)\1\)/g;
+var requireRegExp = /[^.]\s*require\s*\((['"])([^)]+)\1\)/g;
 var commentCssRegExp = /\/\*([\s\S]*?)\*\//mg;
 var importRegExp = /@import\s*(['"])([^\1]+)\1/g;
 

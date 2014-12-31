@@ -7,13 +7,6 @@ app.use(serveIndex(cwd, {
     hidden: true,
     view: 'details'
 }));
-var jsx = require('koa-jsx');
-app.use(jsx(cwd, {
-    next:function(){
-        return 1;
-    },
-    reactTools: require('react-tools')
-}));
 var modularize = require('../');
 app.use(modularize(cwd, {
 
