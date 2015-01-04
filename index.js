@@ -71,7 +71,7 @@ function completeRequire(file, content) {
 
   // modify package path
   content = content.replace(requireRegExp, function (match, quote, dep) {
-    var leading = match.match(/^[^.'"]\s*require\s*\(/)[0];
+    var leading = match.match(/^[^.]\s*require\s*\(/)[0];
     if (startsWithPackageName(dep)) {
       var packageName = getPackageName(dep);
       var suffix = '';
