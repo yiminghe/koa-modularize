@@ -18,6 +18,7 @@
     "url": "http://github.com/yiminghe/koa-modularize.git"
   },
   "scripts": {
+    "publish":"git push origin",
     "start": "node --harmony test/server"
   },
   "devDependencies": {
