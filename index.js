@@ -49,7 +49,7 @@ function findPackagePath(file, name, suffix) {
 var commentRegExp = /(\/\*([\s\S]*?)\*\/|([^:]|^)\/\/(.*)$)/mg;
 var requireRegExp = /[^.]\s*require\s*\((['"])([^)]+)\1\)/g;
 var commentCssRegExp = /\/\*([\s\S]*?)\*\//mg;
-var importRegExp = /@import\s*(['"])([^\1]+)\1/g;
+var importRegExp = /@import\s*(['"])([^"']+)\1/g;
 
 function completeRequire(file, content) {
   // Remove comments from the callback string,
