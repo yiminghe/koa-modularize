@@ -14,5 +14,5 @@ app.use(modularize(cwd, {
 app.use(serve(cwd, {
     hidden: true
 }));
-app.listen(8000);
-console.log('server start at ' + 8000);
+app.listen(9999);
+console.log('server start at ' + 9999);

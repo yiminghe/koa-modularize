@@ -8,6 +8,9 @@ var fs = require('fs');
 var util = require('modulex-util');
 var cwd = process.cwd();
 var cwdLength = cwd.length;
+// browser:{'xx.js':'yy.js'}
+var browserMap = {};
+var processedBrowserPackage = {};
 
 function startsWithPackageName(str) {
   return !util.startsWith(str, '.') && !util.startsWith(str, '/') && !util.startsWith(str, 'http:') && !util.startsWith(str, 'https:');
@@ -31,15 +34,36 @@ function findPackagePath(file, name, suffix) {
     var packageDir = path.join(dir, 'node_modules/' + name);
     if (fs.existsSync(packageDir)) {
       var packagePath = packageDir.slice(cwdLength);
+      var packageInfo = require(path.join(packageDir, 'package.json'));
+      if (!processedBrowserPackage[packagePath]) {
+        if (typeof packageInfo.browser === 'object') {
+          var browser = packageInfo.browser;
+          for (var b in browser) {
+            var fb = path.join(packagePath, b);
+            var fv = path.join(packagePath, browser[b]);
+            browserMap[fb] = fv;
+          }
+        }
+        processedBrowserPackage[packagePath] = 1;
+      }
+      // require('xx')
       if (!suffix) {
-        var packageInfo = require(path.join(packageDir, 'package.json'));
-        var main = packageInfo.browser || packageInfo.main || 'index';
+        var main;
+        if (typeof packageInfo.browser === 'string') {
+          main = packageInfo.browser
+        }
+        main = main || packageInfo.main || 'index';
         if (util.startsWith(main, './')) {
           main = main.slice(2);
         }
         suffix = '/' + main;
       }
-      return packagePath + suffix;
+      // require('xx/zz')
+      var ret = packagePath + suffix;
+      if (!path.extname(ret)) {
+        ret = ret + '.js';
+      }
+      return browserMap[ret] || ret;
     }
   } while (dir !== cwd && (dir = path.resolve(dir, '../')));
   console.warn('[koa-modularize]: Can not find package in file ' + file + ': ' + name + ', please npm install ' + name + '!');
@@ -80,6 +104,15 @@ function completeRequire(file, content) {
         packageName = packageName.packageName;
       }
       return leading + quote + findPackagePath(file, packageName, suffix) + quote + ')';
+    } else if (util.startsWith(dep, '.')) {
+      var fullPath = path.join(path.dirname(file), dep).slice(cwdLength);
+      if (!path.extname(fullPath)) {
+        fullPath += '.js';
+      }
+      if (browserMap[fullPath]) {
+        return leading + quote + (browserMap[fullPath]) + quote + ')';
+      }
+      return match;
     } else {
       return match;
     }
