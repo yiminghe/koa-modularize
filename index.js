@@ -75,7 +75,7 @@ var requireRegExp = /[^.]\s*require\s*\((['"])([^)]+)\1\)/g;
 var commentCssRegExp = /\/\*([\s\S]*?)\*\//mg;
 var importRegExp = /@import\s*(['"])([^"']+)\1/g;
 
-function completeRequire(file, content) {
+function completeRequire(file, content, option) {
   // Remove comments from the callback string,
   // look for require calls, and pull them into the dependencies,
   // but only if there are function args.
@@ -103,7 +103,12 @@ function completeRequire(file, content) {
         suffix = packageName.suffix;
         packageName = packageName.packageName;
       }
-      return leading + quote + findPackagePath(file, packageName, suffix) + quote + ')';
+      var packagePath;
+      if (option.packageHook) {
+        packagePath = option.packageHook(file, packageName, suffix);
+      }
+      packagePath = packagePath || findPackagePath(file, packageName, suffix);
+      return leading + quote + packagePath + quote + ')';
     } else if (util.startsWith(dep, '.')) {
       var fullPath = path.join(path.dirname(file), dep).slice(cwdLength);
       if (!path.extname(fullPath)) {
@@ -195,7 +200,7 @@ module.exports = function (dir, option) {
         }
       }
       if (!option.nowrap || !option.nowrap.call(this)) {
-        content = completeRequire(file, content);
+        content = completeRequire(file, content, option);
         content = 'define(function (require, exports, module) {' + content + '\n});';
       }
       this.set('Content-Type', 'application/javascript;charset=utf-8');
