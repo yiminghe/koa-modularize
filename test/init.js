@@ -2,6 +2,7 @@ var utils = require('modulex-util');
 var debug = require('debug');
 debug.enable('app');
 var log = debug('app');
+require('./d');
 
 //var x = require('x/i');
 //var x = require('x');
