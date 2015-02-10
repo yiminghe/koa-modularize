@@ -1,6 +1,6 @@
 {
   "name": "koa-modularize",
-  "version": "3.2.0",
+  "version": "3.3.0",
   "author": "yiminghe <yiminghe@gmail.com>",
   "description": "koa middleware for transforming commonjs file into browser module format",
   "keywords": [
@@ -19,7 +19,7 @@
   },
   "scripts": {
     "publish": "git push origin",
-    "start": "node --harmony test/server"
+    "start": "DEBUG=koa-modularize node --harmony test/server"
   },
   "devDependencies": {
     "debug": "~2.1.1",
@@ -30,7 +30,9 @@
     "modulex": "~1.7.4",
     "rc-calendar": "~1.2.4",
     "react-tools": "^0.12.0",
-    "util": "^0.10.3"
+    "superagent": "^0.21.0",
+    "util": "^0.10.3",
+    "when": "^3.7.2"
   },
   "dependencies": {
     "modulex-util": "^1.1.4",

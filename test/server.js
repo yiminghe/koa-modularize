@@ -3,6 +3,7 @@ var serve = require('koa-static');
 var app = koa();
 var cwd = process.cwd();
 var serveIndex = require('koa-serve-index');
+var debug = require('debug')('koa-modularize');
 app.use(serveIndex(cwd, {
   hidden: true,
   view: 'details'
@@ -23,4 +24,4 @@ app.use(serve(cwd, {
   hidden: true
 }));
 app.listen(9999);
-console.log('server start at ' + 9999);
+debug('server start at ' + 9999);

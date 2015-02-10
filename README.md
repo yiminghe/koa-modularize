@@ -1,7 +1,25 @@
 # koa-modularize
+---
 
 koa middleware for transforming node_modules js file into browser module format and imported css path to absolute node_modules path
 
+[![NPM version][npm-image]][npm-url]
+[![gemnasium deps][gemnasium-image]][gemnasium-url]
+[![node version][node-image]][node-url]
+[![npm download][download-image]][download-url]
+
+[npm-image]: http://img.shields.io/npm/v/koa-modularize.svg?style=flat-square
+[npm-url]: http://npmjs.org/package/koa-modularize
+[travis-image]: https://img.shields.io/travis/yiminghe/koa-modularize.svg?style=flat-square
+[travis-url]: https://travis-ci.org/yiminghe/koa-modularize
+[coveralls-image]: https://img.shields.io/coveralls/yiminghe/koa-modularize.svg?style=flat-square
+[coveralls-url]: https://coveralls.io/r/yiminghe/koa-modularize?branch=master
+[gemnasium-image]: http://img.shields.io/gemnasium/yiminghe/koa-modularize.svg?style=flat-square
+[gemnasium-url]: https://gemnasium.com/yiminghe/koa-modularize
+[node-image]: https://img.shields.io/badge/node.js-%3E=_0.11-green.svg?style=flat-square
+[node-url]: http://nodejs.org/download/
+[download-image]: https://img.shields.io/npm/dm/koa-modularize.svg?style=flat-square
+[download-url]: https://npmjs.org/package/koa-modularize
 
 ## Usage
 
@@ -18,7 +36,7 @@ app.listen(8000);
 npm start
 ```
 
-open  http://localhost:8000/test/helloworld.js  http://localhost:8000/test/test.css
+open  http://localhost:9999/test/test.html
 
 ## API
 

@@ -9,6 +9,10 @@ var log = debug('app');
 require('util/support/isBuffer');
 require('util');
 
+require('when');
+
+require('superagent');
+
 /*
 
  try
