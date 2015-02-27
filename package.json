@@ -1,6 +1,6 @@
 {
   "name": "koa-modularize",
-  "version": "3.4.2",
+  "version": "3.4.3",
   "author": "yiminghe <yiminghe@gmail.com>",
   "description": "koa middleware for transforming commonjs file into browser module format",
   "keywords": [
@@ -20,6 +20,7 @@
   "scripts": {
     "lint": "jshint lib/*",
     "publish": "git push origin",
+    "mount": "DEBUG=koa-modularize node --harmony test/server-mount",
     "start": "DEBUG=koa-modularize node --harmony test/server"
   },
   "precommit": [
