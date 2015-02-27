@@ -14,6 +14,7 @@ app.use(mount(prefix, serveIndex(cwd, {
 var modularize = require('../');
 app.use(mount(prefix, modularize(cwd, {
   prefix: prefix,
+  externals: {jquery: "jQuery"},
   packageHook: function (file, packageName, suffix) {
     if (packageName === 'x' && !suffix) {
       return '/node_modules/modulex-util/index';
