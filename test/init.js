@@ -31,3 +31,8 @@ log(utils.escapeHtml('<a>'));
 var $ = require('jquery');
 
 $('#result').html(utils.escapeHtml('<b>'));
+
+// domain require
+
+//var matrix = require('@ali/matrix');
+//console.log(matrix);
