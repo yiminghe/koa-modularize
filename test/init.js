@@ -20,6 +20,7 @@ require('when');
 
 require('superagent');
 
+require('react');
 /*
 
  try
