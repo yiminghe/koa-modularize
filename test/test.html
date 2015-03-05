@@ -1,7 +1,9 @@
-<link rel="stylesheet" href="test.css"/>
 <script src="../node_modules/modulex/build/modulex-debug.js?nowrap"></script>
 <script src="../node_modules/jquery/dist/jquery.js?nowrap"></script>
 <div id="result"></div>
 <script>
+    window.process={
+        env:{}
+    };
     require('./init');
 </script>

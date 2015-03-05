@@ -1,4 +1,5 @@
 require('debug');
+require('rc-calendar/assets/bootstrap.css');
 var x = {
   require: function () {
   }
@@ -31,7 +32,12 @@ log(utils.escapeHtml('<a>'));
 
 var $ = require('jquery');
 
+
 $('#result').html(utils.escapeHtml('<b>'));
+
+$('#result').click(function(){
+  console.log(1);
+});
 
 // domain require
 
