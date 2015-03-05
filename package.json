@@ -1,6 +1,6 @@
 {
   "name": "koa-modularize",
-  "version": "3.5.0",
+  "version": "3.5.1",
   "author": "yiminghe <yiminghe@gmail.com>",
   "description": "koa middleware for transforming commonjs file into browser module format",
   "keywords": [
