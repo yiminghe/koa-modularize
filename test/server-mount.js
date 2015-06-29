@@ -6,6 +6,7 @@ var serveIndex = require('koa-serve-index');
 var debug = require('debug')('koa-modularize');
 var mount = require('koa-mount');
 var prefix = '/mount';
+var path = require('path');
 
 app.use(mount(prefix, serveIndex(cwd, {
   hidden: true,
@@ -15,14 +16,8 @@ var modularize = require('../');
 app.use(mount(prefix, modularize(cwd, {
   prefix: prefix,
   externals: {jquery: "jQuery"},
-  packageHook: function (file, packageName, suffix) {
-    if (packageName === 'x' && !suffix) {
-      return '/node_modules/modulex-util/index';
-    } else {
-      if (packageName === 'x') {
-        return '/node_modules/modulex-util' + suffix;
-      }
-    }
+  modules: {
+    x: path.join(cwd, 'node_modules/modulex-util/index')
   }
 })));
 app.use(mount(prefix, serve(cwd, {

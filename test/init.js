@@ -39,6 +39,8 @@ $('#result').click(function(){
   console.log(1);
 });
 
+require('x');
+
 // domain require
 
 //var matrix = require('@ali/matrix');

@@ -2,6 +2,7 @@ var koa = require('koa');
 var serve = require('koa-static');
 var app = koa();
 var cwd = process.cwd();
+var path = require('path');
 var serveIndex = require('koa-serve-index');
 var debug = require('debug')('koa-modularize');
 app.use(serveIndex(cwd, {
@@ -10,18 +11,12 @@ app.use(serveIndex(cwd, {
 }));
 var modularize = require('../');
 app.use(modularize(cwd, {
-  externals: {jquery: "jQuery"},
+  externals: {jquery: "window.jQuery"},
   next: function () {
     return 1;
   },
-  packageHook: function (file, packageName, suffix) {
-    if (packageName === 'x' && !suffix) {
-      return '/node_modules/modulex-util/index';
-    } else {
-      if (packageName === 'x') {
-        return '/node_modules/modulex-util' + suffix;
-      }
-    }
+  modules:{
+    x:path.join(cwd,'node_modules/modulex-util/index')
   }
 }));
 
