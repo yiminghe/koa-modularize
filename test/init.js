@@ -41,6 +41,10 @@ $('#result').click(function(){
 
 require('x');
 
+require('./node');
+
+require('koa-modularize/test/node');
+
 // domain require
 
 //var matrix = require('@ali/matrix');

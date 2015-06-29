@@ -1,6 +1,6 @@
 {
   "name": "koa-modularize",
-  "version": "3.6.1",
+  "version": "3.6.2",
   "author": "yiminghe <yiminghe@gmail.com>",
   "description": "koa middleware for transforming commonjs file into browser module format",
   "keywords": [
@@ -16,6 +16,9 @@
   "repository": {
     "type": "git",
     "url": "http://github.com/yiminghe/koa-modularize.git"
+  },
+  "browser":{
+    "./test/node.js":"./test/browser/browser.js"
   },
   "scripts": {
     "lint": "jshint lib/*",
