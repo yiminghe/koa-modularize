@@ -1,6 +1,6 @@
 {
   "name": "koa-modularize",
-  "version": "3.6.8",
+  "version": "3.6.9",
   "author": "yiminghe <yiminghe@gmail.com>",
   "description": "koa middleware for transforming commonjs file into browser module format",
   "keywords": [
@@ -50,8 +50,8 @@
   },
   "dependencies": {
     "browser-resolve": "~1.9.0",
-    "match-require": "~1.0.2",
-    "modulex-util": "~1.1.8",
+    "match-require": "1.x",
+    "modulex-util": "1.x",
     "source-map": "^0.4.1"
   }
 }
